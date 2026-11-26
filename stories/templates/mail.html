@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Mail</title>
+    </head>
+    <style>
+        table, th, td {
+          border:1px solid black;
+          text-align: left;
+          padding: 8px;
+        }
+    </style>
+
+    <body>
+
+        <h1> Mail</h1>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Stolen Cookies</th>
+            </tr>
+            {% for mail in mails %}
+                <tr>
+                    <td>{{ mail.id }}</td>
+                    <td>{{ mail.content }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

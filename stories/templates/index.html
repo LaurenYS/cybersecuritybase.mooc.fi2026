@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Hello, world!</title>
+    </head>
+
+    <body>
+
+        <h1> Storyteller APP</h1>
+
+        {% if user.is_authenticated %}
+            <p>Welcome, <b>{{ user.username }}</b>!</p>
+
+            <form action='/accounts/logout/' method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Logout"/>
+            </form>
+
+            <hr>
+
+            <h2>Add a New Story</h2>
+            <form action="add-story/" method="POST">
+                {% csrf_token %}
+                <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+                    <label for="id_title" style="width: 110px;">Story Title:</label>
+                    <input id="id_title" type="text" name="title" required style="width: 350px; box-sizing: border-box;">
+                </div>
+
+                <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+                    <label for="id_content" style="width: 110px;">Story Content:</label>
+                    <textarea id="id_content" name="content" rows="7" required style="width: 350px; box-sizing: border-box;"></textarea>
+                </div>
+
+                <input type="submit" value="Add Story">
+            </form>
+
+            <hr>
+
+            <h2>My Stories</h2>
+
+            {% for story in stories %}
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.content }}</p>
+                <p>Average Rating: <b>{{ story.avg_rate }}</b></p>
+            {% endfor %}
+
+            <hr>
+
+            <h2>Others' Stories</h2>
+
+            {% for story in sstories %}
+                <h3>{{ story.title }} <i>by {{ story.author }}</i></h3>
+                <p>{{ story.content }}</p>
+
+                <form id="review-form-{{ story.id }}" action="/stories/add-review/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="story_id" value="{{ story.id }}"/>
+                </form>
+
+                <form id="delete-form-{{ story.id }}" action="/stories/delete-review/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="story_id" value="{{ story.id }}"/>
+                </form>
+
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <p>Average Rating: <b>{{ story.avg_rate }}</b></p>
+                    <label for="id_rate_{{ story.id }}" style="width: 70px; margin-left: 10px;">Rate (0-5):</label>
+
+                    <input id="id_rate_{{ story.id }}" form="review-form-{{ story.id }}"
+                          type="number" name="rate" min="0" max="5"
+                          value="{{ story.my_rate|default_if_none:'' }}" required
+                          style="width: 50px; box-sizing: border-box;">
+
+                    <input type="submit" form="review-form-{{ story.id }}"
+                          value="{% if story.my_rate is not None %}Update Review{% else %}Add Review{% endif %}"/>
+
+                    {% if story.my_rate is not None %}
+                        <input type="submit" form="delete-form-{{ story.id }}" value="Delete Review"/>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>You are not logged in.</p>
+            <a href="{% url 'login' %}?next={{ request.path }}">Login</a>
+        {% endif %}
+    </body>
+</html>

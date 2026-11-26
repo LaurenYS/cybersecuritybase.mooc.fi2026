@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Reviews</title>
+    </head>
+    <style>
+        table, th, td {
+          border:1px solid black;
+          text-align: left;
+          padding: 8px;
+        }
+    </style>
+
+    <body>
+        <h1>Reviews of {{ username }}</h1>
+        <table>
+            <tr>
+                <th>Review ID</th>
+                <th>User ID</th>
+                <th>Story ID</th>
+                <th>Rate</th>
+            </tr>
+            {% for review in reviews %}
+                <tr>
+                    <td>{{ review.0 }}</td>
+                    <td>{{ review.1 }}</td>
+                    <td>{{ review.2 }}</td>
+                    <td>{{ review.3 }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>
